@@ -1,0 +1,7 @@
+name: ${project.artifactId}
+version: ${project.version}
+main: me.Zahachos.punish.Main
+Description: A simple punishment plugin using a custom inventory GUI
+authors: [Zahachos]
+commands:
+    punish:

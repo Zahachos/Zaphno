@@ -1,0 +1,235 @@
+name: ${project.artifactId}
+main: me.Zahachos.ServerManager.Main
+authors: [Zahachos, KarateMan]
+version: ${project.version}
+description: This manages the Zaphno's Network.
+
+commands:
+
+    heal:
+        usage: /<command> [player]
+        aliases: [health, gethealth]
+        description: Heal yourself and others.
+
+    feed:
+        usage: /<command> [player]
+        aliases: [food, getfood, hunger]
+        description: Feed yourself and others.
+
+    regenerate:
+        usage: /<command> [player]
+        aliases: [regen, regeneration]
+        description: Heal and feed yourself and others.
+
+    tp:
+        usage: /<command> [player] [player2]
+        aliases: [regen, regeneration]
+        description: Teleport to a player, or another player to one.
+
+    tpall:
+        usage: /<command>
+        aliases: [teleportall, teleporteveryone]
+        description: Teleport everyone to you.
+
+    tpa:
+        usage: /<command> [player]
+        aliases: [askteleport]
+        description: Ask a player to teleport to him.
+
+    tph:
+        usage: /<command> [player]
+        aliases: [teleporthere, teleporth]
+        description: Ask a player to teleport them to you.
+
+    tpaccept:
+        usage: /<command>
+        aliases: [teleportaccept, acceptteleport]
+        description: Accepts the last teleport request.
+
+    freeze:
+        usage: /<command> [username]
+        aliases: [freezeplayer]
+        description: Freeze or unfreeze a player!
+
+    warp:
+        usage: /<command> [warp_name]
+        description: Teleport to a saved location!
+
+    setwarp:
+        usage: /<command> [warp_name]
+        description: Set a warp location!
+
+    delwarp:
+        usage: /<command> [warp_name]
+        aliases: [deletewarp]
+        description: Delete a warp!
+
+    mute:
+        usage: /<command> [username] [duration] [reason]
+        aliases: [muteplayer]
+        description: Temporarily mute a player!
+
+    tempmute:
+        usage: /<command>
+        aliases: [muteplayer]
+        description: Mute a player!
+
+    unmute:
+        usage: /<command> [username]
+        aliases: [unmuteplayer]
+        description: Unmute a player!
+
+    tempban:
+        usage: /<command> [username] [duration] [reason]
+        aliases: [tempbanplayer]
+        description: Temporarily ban a player!
+
+    pardon:
+        usage: /<command> [username]
+        aliases: [pardonplayer, unban]
+        description: Pardon/Unban a player!
+
+    ban:
+        usage: /<command> [username] [reason]
+        aliases: [setbanned, banplayer]
+        description: Permanently ban a player!
+
+    kick:
+        usage: /<command> [username] [reason]
+        aliases: [setbanned, banplayer]
+        description: Kick a player!
+
+    spawn:
+        usage: /<command>
+        description: Go to the server spawn!
+
+    setspawn:
+        usage: /<command>
+        description: Set the server spawn!
+
+
+permissions:
+
+    sm.tp.*:
+        description: Use all tp commands!
+        children:
+            sm.tp.tph: true
+            sm.tp.tpa: true
+            sm.tp.tp: true
+            sm.tp.tpall: true
+        default: op
+
+    sm.health.*:
+        description: Use all health commands!
+        children:
+            sm.health.heal: true
+            sm.health.feed: true
+            sm.health.regen: true
+        default: op
+
+    sm.mute.*:
+        description: Use all mute commands!
+        children:
+            sm.mute.mute: true
+            sm.mute.unmute: true
+            sm.mute.canChat: true
+            sm.mute.tempmute: true
+        default: op
+
+    sm.ban.*:
+        description: Use all ban commands!
+        children:
+            sm.ban.pardon: true
+            sm.ban.ban: true
+            sm.ban.kick: true
+            sm.ban.tempban: true
+        default: op
+
+    sm.warp.*:
+        description: Use all warp commands!
+        children:
+            sm.warp.set: true
+            sm.warp.warp: true
+            sm.warp.delete: true
+        default: op
+
+
+    sm.heath.heal:
+        default: op
+        description: Heal a player!
+
+    sm.heath.feed:
+        default: op
+        description: Feed a player!
+
+    sm.heath.regen:
+        default: op
+        description: Heal and feed a player!
+
+    sm.tp.tp:
+        default: op
+        description: Teleport to a player, or another player to one!
+
+    sm.tp.tpall:
+        default: op
+        description: Teleport everyone to you!
+
+    sm.tp.tph:
+        default: op
+        description: Ask a player to teleport them to you.
+
+    sm.tp.tpa:
+        default: op
+        description: Teleport only if a player accepts!
+
+    sm.mute.mute:
+        default: op
+        description: Mute a player!
+
+    sm.mute.unmute:
+        default: op
+        description: Unmute a player!
+
+    sm.mute.canChat:
+        default: op
+        description: Sets if a muted player can chat!
+
+    sm.ban.tempban:
+        default: op
+        description: Temporarily ban a player!
+
+    sm.ban.pardon:
+        default: op
+        description: Pardon/Unban a player!
+
+    sm.ban.ban:
+        default: op
+        description: Permanently ban a player!
+
+    sm.ban.kick:
+        default: op
+        description: Kick a player!
+
+    sm.mute.tempmute:
+        default: op
+        description: Temporarily mute a player!
+
+    sm.freeze:
+        default: op
+        description: Freeze or unfreeze a player!
+
+    sm.warp.warp:
+        default: op
+        description: Teleport to a saved location!
+
+    sm.warp.set:
+        default: op
+        description: Set a warp location!
+
+    sm.warp.delete:
+        default: op
+        description: Delete a warp!
+
+    sm.setspawn:
+        default: op
+        description: Set the server spawn!
