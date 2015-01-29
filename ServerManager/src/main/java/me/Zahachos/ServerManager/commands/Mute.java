@@ -23,271 +23,255 @@ import java.util.List;
 
 public class Mute implements Listener, CommandExecutor {
 
-	public static boolean isInteger(String s) {
-		try { 
-			Integer.parseInt(s); 
-		} catch(NumberFormatException e) { 
-			return false; 
-		}
-		return true;
-	}
+    public static boolean isInteger(String s) {
+        try {
+            Integer.parseInt(s);
+        } catch(NumberFormatException e) {
+            return false;
+        }
+        return true;
+    }
 
-	public boolean isMuted(Player play) {
-		File player = new File(Main.plugin.getDataFolder() + "/players/" + play.getUniqueId() + ".yml");
-		FileConfiguration config = YamlConfiguration.loadConfiguration(player);
+    public boolean isMuted(Player play) {
+        File player = new File(Main.plugin.getDataFolder() + "/players/" + play.getUniqueId() + ".yml");
+        FileConfiguration config = YamlConfiguration.loadConfiguration(player);
 
-		if (config.getBoolean("muted.perm.state")) {
-			return true;
-		} else {
-			return false;
-		}
-	}
+        return config.getBoolean("muted.perm.state");
+    }
 
-	public boolean isMuted(OfflinePlayer play) {
-		File player = new File(Main.plugin.getDataFolder() + "/players/" + play.getUniqueId() + ".yml");
-		FileConfiguration config = YamlConfiguration.loadConfiguration(player);
+    public boolean isMuted(OfflinePlayer play) {
+        File player = new File(Main.plugin.getDataFolder() + "/players/" + play.getUniqueId() + ".yml");
+        FileConfiguration config = YamlConfiguration.loadConfiguration(player);
 
-		if (config.getBoolean("muted.perm.state")) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
-	public boolean isTempMuted(Player play) {
-		if (Cooldown.isCooling(play.getUniqueId(), "Mute")) {
-			return true;
-		} else {
-			return false;
-		}
-	}
+        return config.getBoolean("muted.perm.state");
+    }
 
-	public boolean isTempMuted(OfflinePlayer play) {
-		if (Cooldown.isCooling(play.getUniqueId(), "Mute")) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
+    public boolean isTempMuted(Player play) {
+        return Cooldown.isCooling(play.getUniqueId(), "Mute");
+    }
 
-	@EventHandler
-	public void onPlayerChat(AsyncPlayerChatEvent e) {
-		Player play = e.getPlayer();
-		if (!play.hasPermission("sm.mute.canChat")) {
-			if (Cooldown.isCooling(play.getUniqueId(), "Mute")) {
+    public boolean isTempMuted(OfflinePlayer play) {
+        return Cooldown.isCooling(play.getUniqueId(), "Mute");
+    }
 
-				e.setCancelled(true);
 
-				File player = new File(Main.plugin.getDataFolder() + "/players/" + play.getUniqueId() + ".yml");
-				FileConfiguration config = YamlConfiguration.loadConfiguration(player);
-				List<String> list = config.getStringList("muted.temp.reason");
-				String reason = list.get(list.size() - 1);
+    @EventHandler
+    public void onPlayerChat(AsyncPlayerChatEvent e) {
+        Player play = e.getPlayer();
+        if (!play.hasPermission("sm.mute.canChat")) {
+            if (Cooldown.isCooling(play.getUniqueId(), "Mute")) {
 
-				if (Cooldown.getTime(play.getUniqueId(), "Mute") < 60000L) {
-					MessageManager.getInstance().custom(play, ChatColor.YELLOW + "You are still muted for " + Cooldown.getRemaining(play.getUniqueId(), "Mute") + " seconds." + ChatColor.RED + " Reason: " + reason);
-					return;
-				}
-				if (Cooldown.getTime(play.getUniqueId(), "Mute") < 3600000L) {
-					MessageManager.getInstance().custom(play, ChatColor.YELLOW + "You are still muted for " + Cooldown.getRemaining(play.getUniqueId(), "Mute") + " minutes." + ChatColor.RED + " Reason: " + reason);
-					return;
-				}
-				if (Cooldown.getTime(play.getUniqueId(), "Mute") < 86400000L) {
-					MessageManager.getInstance().custom(play, ChatColor.YELLOW + "You are still muted for " + Cooldown.getRemaining(play.getUniqueId(), "Mute") + " hours." + ChatColor.RED + " Reason: " + reason);
-					return;
-				}
-				MessageManager.getInstance().custom(play, ChatColor.YELLOW + "You are still muted for " + Cooldown.getRemaining(play.getUniqueId(), "Mute") + " days." + ChatColor.RED + " Reason: " + reason);
-				return;
-			}
-			if (isMuted(play)) {
+                e.setCancelled(true);
 
-				e.setCancelled(true);
+                File player = new File(Main.plugin.getDataFolder() + "/players/" + play.getUniqueId() + ".yml");
+                FileConfiguration config = YamlConfiguration.loadConfiguration(player);
+                List<String> list = config.getStringList("muted.temp.reason");
+                String reason = list.get(list.size() - 1);
 
-				File player = new File(Main.plugin.getDataFolder() + "/players/" + play.getUniqueId() + ".yml");
-				FileConfiguration config = YamlConfiguration.loadConfiguration(player);
-				List<String> list = config.getStringList("muted.perm.reason");
-				String reason = list.get(list.size() - 1);
+                if (Cooldown.getTime(play.getUniqueId(), "Mute") < 60000L) {
+                    MessageManager.getInstance().custom(play, ChatColor.YELLOW + "You are still muted for " + Cooldown.getRemaining(play.getUniqueId(), "Mute") + " seconds." + ChatColor.RED + " Reason: " + reason);
+                    return;
+                }
+                if (Cooldown.getTime(play.getUniqueId(), "Mute") < 3600000L) {
+                    MessageManager.getInstance().custom(play, ChatColor.YELLOW + "You are still muted for " + Cooldown.getRemaining(play.getUniqueId(), "Mute") + " minutes." + ChatColor.RED + " Reason: " + reason);
+                    return;
+                }
+                if (Cooldown.getTime(play.getUniqueId(), "Mute") < 86400000L) {
+                    MessageManager.getInstance().custom(play, ChatColor.YELLOW + "You are still muted for " + Cooldown.getRemaining(play.getUniqueId(), "Mute") + " hours." + ChatColor.RED + " Reason: " + reason);
+                    return;
+                }
+                MessageManager.getInstance().custom(play, ChatColor.YELLOW + "You are still muted for " + Cooldown.getRemaining(play.getUniqueId(), "Mute") + " days." + ChatColor.RED + " Reason: " + reason);
+                return;
+            }
+            if (isMuted(play)) {
 
-				MessageManager.getInstance().custom(play, ChatColor.YELLOW + "You are permanently muted!" + ChatColor.RED + " Reason: " + reason);
-			}
-		}
-	}
+                e.setCancelled(true);
 
-	@Override
-	@SuppressWarnings("deprecation")
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
-		if (cmd.getName().equalsIgnoreCase("tempmute")) {
-			if (sender.hasPermission("sm.mute.tempmute")) {
-				if (args.length == 0) {
-					MessageManager.getInstance().severe(sender, "Please specify who you want to temporarily mute, the duration and the reason!");
-					return true;
-				}
-				if (args.length == 1) {
-					MessageManager.getInstance().severe(sender, "Please specify the duration and the reason of the temporary mute!");
-					return true;
-				}
-				if (args.length == 2) {
-					MessageManager.getInstance().severe(sender, "Please specify the reason of the temporary mute!");
-					return true;
-				} else {
-					OfflinePlayer target = Bukkit.getServer().getOfflinePlayer(args[0]);
-					if (target == null) {
-						MessageManager.getInstance().severe(sender, "Player doesn't exist!");
-						return true;
-					} else if (!isInteger(args[1])) {
-						MessageManager.getInstance().severe(sender, "The duration must be a number!");
-						return true;
-					} else {
+                File player = new File(Main.plugin.getDataFolder() + "/players/" + play.getUniqueId() + ".yml");
+                FileConfiguration config = YamlConfiguration.loadConfiguration(player);
+                List<String> list = config.getStringList("muted.perm.reason");
+                String reason = list.get(list.size() - 1);
 
-						int duration = Integer.parseInt(args[1]);
+                MessageManager.getInstance().custom(play, ChatColor.YELLOW + "You are permanently muted!" + ChatColor.RED + " Reason: " + reason);
+            }
+        }
+    }
 
-						StringBuilder string = new StringBuilder();
-						for (int r = 2; r < args.length; r++) {
-							string.append(args[r] + " ");
-						}
-						String rs = string.toString().trim();
+    @Override
+    @SuppressWarnings("deprecation")
+    public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+        if (cmd.getName().equalsIgnoreCase("tempmute")) {
+            if (sender.hasPermission("sm.mute.tempmute")) {
+                if (args.length == 0) {
+                    MessageManager.getInstance().severe(sender, "Please specify who you want to temporarily mute, the duration and the reason!");
+                    return true;
+                }
+                if (args.length == 1) {
+                    MessageManager.getInstance().severe(sender, "Please specify the duration and the reason of the temporary mute!");
+                    return true;
+                }
+                if (args.length == 2) {
+                    MessageManager.getInstance().severe(sender, "Please specify the reason of the temporary mute!");
+                    return true;
+                } else {
+                    OfflinePlayer target = Bukkit.getServer().getOfflinePlayer(args[0]);
+                    if (target == null) {
+                        MessageManager.getInstance().severe(sender, "Player doesn't exist!");
+                        return true;
+                    } else if (!isInteger(args[1])) {
+                        MessageManager.getInstance().severe(sender, "The duration must be a number!");
+                        return true;
+                    } else {
 
-						File puuidFile = new File(Main.plugin.getDataFolder() + "/players/" + target.getUniqueId() + ".yml");
-						FileConfiguration playerFile = YamlConfiguration.loadConfiguration(puuidFile);
+                        int duration = Integer.parseInt(args[1]);
 
-						List<String> reason = new ArrayList<String>();
+                        StringBuilder string = new StringBuilder();
+                        for (int r = 2; r < args.length; r++) {
+                            string.append(args[r] + " ");
+                        }
+                        String rs = string.toString().trim();
 
-						if (playerFile.isSet("muted.temp.reason")) {
-							reason = playerFile.getStringList("muted.temp.reason");
-						}
-						reason.add(rs);
-						playerFile.set("muted.temp.reason", reason);
-						try {
-							playerFile.save(puuidFile);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
+                        File puuidFile = new File(Main.plugin.getDataFolder() + "/players/" + target.getUniqueId() + ".yml");
+                        FileConfiguration playerFile = YamlConfiguration.loadConfiguration(puuidFile);
 
-						Cooldown.add(target.getUniqueId(), "Mute", duration, System.currentTimeMillis());
+                        List<String> reason = new ArrayList<String>();
 
-						if (Cooldown.getTime(target.getUniqueId(), "Mute") < 60000L) {
-							MessageManager.getInstance().custom(sender, ChatColor.YELLOW + "" + ChatColor.BOLD + "You have been temporarily muted for " + Cooldown.getRemaining(target.getUniqueId(), "Mute") + " seconds." + ChatColor.RED + " Reason: " + rs);
-						} else if (Cooldown.getTime(target.getUniqueId(), "Mute") < 3600000L) {
-							MessageManager.getInstance().custom(sender, ChatColor.YELLOW + "" + ChatColor.BOLD + "You have been temporarily muted for " + Cooldown.getRemaining(target.getUniqueId(), "Mute") + " minutes." + ChatColor.RED + " Reason: " + rs);
-						} else if (Cooldown.getTime(target.getUniqueId(), "Mute") < 86400000L) {
-							MessageManager.getInstance().custom(sender, ChatColor.YELLOW + "" + ChatColor.BOLD + "You have been temporarily muted for " + Cooldown.getRemaining(target.getUniqueId(), "Mute") + " hours." + ChatColor.RED + " Reason: " + rs);
-						} else {
-							MessageManager.getInstance().custom(sender, ChatColor.YELLOW + "" + ChatColor.BOLD + "You have been temporarily muted for " + Cooldown.getRemaining(target.getUniqueId(), "Mute") + " days." + ChatColor.RED + " Reason: " + rs);
-						}
-						if (target.isOnline()) {
-							Player p = Bukkit.getServer().getPlayer(args[0]);
+                        if (playerFile.isSet("muted.temp.reason")) {
+                            reason = playerFile.getStringList("muted.temp.reason");
+                        }
+                        reason.add(rs);
+                        playerFile.set("muted.temp.reason", reason);
+                        try {
+                            playerFile.save(puuidFile);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
 
-							if (Cooldown.getTime(p.getUniqueId(), "Mute") < 60000L) {
-								MessageManager.getInstance().custom(p, ChatColor.YELLOW + "" + ChatColor.BOLD + "You have been temporarily muted for " + Cooldown.getRemaining(p.getUniqueId(), "Mute") + " seconds." + ChatColor.RED + " Reason: " + rs);
-								return true;
-							}
-							if (Cooldown.getTime(p.getUniqueId(), "Mute") < 3600000L) {
-								MessageManager.getInstance().custom(p, ChatColor.YELLOW + "" + ChatColor.BOLD + "You have been temporarily muted for " + Cooldown.getRemaining(p.getUniqueId(), "Mute") + " minutes." + ChatColor.RED + " Reason: " + rs);
-								return true;
-							}
-							if (Cooldown.getTime(p.getUniqueId(), "Mute") < 86400000L) {
-								MessageManager.getInstance().custom(p, ChatColor.YELLOW + "" + ChatColor.BOLD + "You have been temporarily muted for " + Cooldown.getRemaining(p.getUniqueId(), "Mute") + " hours." + ChatColor.RED + " Reason: " + rs);
-								return true;
-							}
-							MessageManager.getInstance().custom(p, ChatColor.YELLOW + "" + ChatColor.BOLD + "You have been temporarily muted for " + Cooldown.getRemaining(p.getUniqueId(), "Mute") + " days." + ChatColor.RED + " Reason: " + rs);
-							return true;
-						}
-						Cooldown.add(target.getUniqueId(), "Mute", duration, System.currentTimeMillis());
-						return true;
-					}
-				}
-			}
-			MessageManager.getInstance().severe(sender, "You don't have the permission to perform this command!");
-			return true;
-		}
-		if (cmd.getName().equalsIgnoreCase("unmute")) {
-			if (sender.hasPermission("sm.mute.unmute")) {
-				if (args.length == 0) {
-					MessageManager.getInstance().severe(sender, "Please specify who you want to unmute!");
-					return true;
-				}
-				OfflinePlayer target = Bukkit.getServer().getOfflinePlayer(args[0]);
-				if (target == null) {
-					MessageManager.getInstance().severe(sender, "Player doesn't exist!");
-					return true;
-				}
-				if (!isMuted(target) && !isTempMuted(target)) {
-					MessageManager.getInstance().severe(sender, "That player isn't muted!");
-					return true;
-				}
-				if (Cooldown.cooldownPlayers.containsKey(target.getUniqueId())) {
-					Cooldown.removeCooldown(target.getUniqueId(), "Mute");
-					MessageManager.getInstance().good(sender, target.getName() + " is no longer temporarily muted!");
-					return true;
-				}
+                        Cooldown.add(target.getUniqueId(), "Mute", duration, System.currentTimeMillis());
 
-				File puuidFile = new File(Main.plugin.getDataFolder() + "/players/" + target.getUniqueId() + ".yml");
-				FileConfiguration playerFile = YamlConfiguration.loadConfiguration(puuidFile);
-				
-				playerFile.set("muted.perm.state", false);
-				try {
-					playerFile.save(puuidFile);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				MessageManager.getInstance().good(sender, target.getName() + " is no longer permanently muted!");
-				return true;
-			}
-			MessageManager.getInstance().severe(sender, "You don't have the permission to perform this command!");
-			return true;
-		}
-		if (cmd.getName().equalsIgnoreCase("mute")) {
-			if (sender.hasPermission("sm.mute.mute")) {
-				if (args.length == 0) {
-					MessageManager.getInstance().severe(sender, "Please specify who you want to permanently mute and the reason!");
-					return true;
-				}
-				OfflinePlayer target = Bukkit.getServer().getOfflinePlayer(args[0]);
-				if (target == null) {
-					MessageManager.getInstance().severe(sender, "Player doesn't exist!");
-					return true;
-				}
-				if (args.length == 1) {
-					MessageManager.getInstance().severe(sender, "Please specify a reason for permanently muting that player!");
-					return true;
-				}
+                        if (Cooldown.getTime(target.getUniqueId(), "Mute") < 60000L) {
+                            MessageManager.getInstance().custom(sender, ChatColor.YELLOW + "" + ChatColor.BOLD + "You have been temporarily muted for " + Cooldown.getRemaining(target.getUniqueId(), "Mute") + " seconds." + ChatColor.RED + " Reason: " + rs);
+                        } else if (Cooldown.getTime(target.getUniqueId(), "Mute") < 3600000L) {
+                            MessageManager.getInstance().custom(sender, ChatColor.YELLOW + "" + ChatColor.BOLD + "You have been temporarily muted for " + Cooldown.getRemaining(target.getUniqueId(), "Mute") + " minutes." + ChatColor.RED + " Reason: " + rs);
+                        } else if (Cooldown.getTime(target.getUniqueId(), "Mute") < 86400000L) {
+                            MessageManager.getInstance().custom(sender, ChatColor.YELLOW + "" + ChatColor.BOLD + "You have been temporarily muted for " + Cooldown.getRemaining(target.getUniqueId(), "Mute") + " hours." + ChatColor.RED + " Reason: " + rs);
+                        } else {
+                            MessageManager.getInstance().custom(sender, ChatColor.YELLOW + "" + ChatColor.BOLD + "You have been temporarily muted for " + Cooldown.getRemaining(target.getUniqueId(), "Mute") + " days." + ChatColor.RED + " Reason: " + rs);
+                        }
+                        if (target.isOnline()) {
+                            Player p = Bukkit.getServer().getPlayer(args[0]);
 
-				StringBuilder string = new StringBuilder();
-				for (int r = 1; r < args.length; r++) {
-					string.append(args[r] + " ");
-				}
-				String rs = string.toString().trim();
+                            if (Cooldown.getTime(p.getUniqueId(), "Mute") < 60000L) {
+                                MessageManager.getInstance().custom(p, ChatColor.YELLOW + "" + ChatColor.BOLD + "You have been temporarily muted for " + Cooldown.getRemaining(p.getUniqueId(), "Mute") + " seconds." + ChatColor.RED + " Reason: " + rs);
+                                return true;
+                            }
+                            if (Cooldown.getTime(p.getUniqueId(), "Mute") < 3600000L) {
+                                MessageManager.getInstance().custom(p, ChatColor.YELLOW + "" + ChatColor.BOLD + "You have been temporarily muted for " + Cooldown.getRemaining(p.getUniqueId(), "Mute") + " minutes." + ChatColor.RED + " Reason: " + rs);
+                                return true;
+                            }
+                            if (Cooldown.getTime(p.getUniqueId(), "Mute") < 86400000L) {
+                                MessageManager.getInstance().custom(p, ChatColor.YELLOW + "" + ChatColor.BOLD + "You have been temporarily muted for " + Cooldown.getRemaining(p.getUniqueId(), "Mute") + " hours." + ChatColor.RED + " Reason: " + rs);
+                                return true;
+                            }
+                            MessageManager.getInstance().custom(p, ChatColor.YELLOW + "" + ChatColor.BOLD + "You have been temporarily muted for " + Cooldown.getRemaining(p.getUniqueId(), "Mute") + " days." + ChatColor.RED + " Reason: " + rs);
+                            return true;
+                        }
+                        Cooldown.add(target.getUniqueId(), "Mute", duration, System.currentTimeMillis());
+                        return true;
+                    }
+                }
+            }
+            MessageManager.getInstance().severe(sender, "You don't have the permission to perform this command!");
+            return true;
+        }
+        if (cmd.getName().equalsIgnoreCase("unmute")) {
+            if (sender.hasPermission("sm.mute.unmute")) {
+                if (args.length == 0) {
+                    MessageManager.getInstance().severe(sender, "Please specify who you want to unmute!");
+                    return true;
+                }
+                OfflinePlayer target = Bukkit.getServer().getOfflinePlayer(args[0]);
+                if (target == null) {
+                    MessageManager.getInstance().severe(sender, "Player doesn't exist!");
+                    return true;
+                }
+                if (!isMuted(target) && !isTempMuted(target)) {
+                    MessageManager.getInstance().severe(sender, "That player isn't muted!");
+                    return true;
+                }
+                if (Cooldown.cooldownPlayers.containsKey(target.getUniqueId())) {
+                    Cooldown.removeCooldown(target.getUniqueId(), "Mute");
+                    MessageManager.getInstance().good(sender, target.getName() + " is no longer temporarily muted!");
+                    return true;
+                }
 
-				File puuidFile = new File(Main.plugin.getDataFolder() + "/players/" + target.getUniqueId() + ".yml");
-				FileConfiguration playerFile = YamlConfiguration.loadConfiguration(puuidFile);
+                File puuidFile = new File(Main.plugin.getDataFolder() + "/players/" + target.getUniqueId() + ".yml");
+                FileConfiguration playerFile = YamlConfiguration.loadConfiguration(puuidFile);
 
-				playerFile.set("muted.perm.state", true);
+                playerFile.set("muted.perm.state", false);
+                try {
+                    playerFile.save(puuidFile);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                MessageManager.getInstance().good(sender, target.getName() + " is no longer permanently muted!");
+                return true;
+            }
+            MessageManager.getInstance().severe(sender, "You don't have the permission to perform this command!");
+            return true;
+        }
+        if (cmd.getName().equalsIgnoreCase("mute")) {
+            if (sender.hasPermission("sm.mute.mute")) {
+                if (args.length == 0) {
+                    MessageManager.getInstance().severe(sender, "Please specify who you want to permanently mute and the reason!");
+                    return true;
+                }
+                OfflinePlayer target = Bukkit.getServer().getOfflinePlayer(args[0]);
+                if (target == null) {
+                    MessageManager.getInstance().severe(sender, "Player doesn't exist!");
+                    return true;
+                }
+                if (args.length == 1) {
+                    MessageManager.getInstance().severe(sender, "Please specify a reason for permanently muting that player!");
+                    return true;
+                }
 
-				List<String> reason = new ArrayList<String>();
+                StringBuilder string = new StringBuilder();
+                for (int r = 1; r < args.length; r++) {
+                    string.append(args[r] + " ");
+                }
+                String rs = string.toString().trim();
 
-				if (playerFile.isSet("muted.perm.reason")) {
-					reason = playerFile.getStringList("muted.perm.reason");
-				}
-				reason.add(rs);
-				playerFile.set("muted.perm.reason", reason);
-				try {
-					playerFile.save(puuidFile);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+                File puuidFile = new File(Main.plugin.getDataFolder() + "/players/" + target.getUniqueId() + ".yml");
+                FileConfiguration playerFile = YamlConfiguration.loadConfiguration(puuidFile);
 
-				MessageManager.getInstance().custom(sender, ChatColor.YELLOW + "" + ChatColor.BOLD + target.getName() + " has been permanently muted! " + ChatColor.RED + "Reason: " + rs);
+                playerFile.set("muted.perm.state", true);
 
-				if (target.isOnline()) {
-					Player p = Bukkit.getServer().getPlayer(args[0]);
-					MessageManager.getInstance().custom(p, ChatColor.YELLOW + "" + ChatColor.BOLD + "You have been permanently muted!" + ChatColor.RED + " Reason: " + rs);
-					return true;
-				}
-				return true;
-			}
-			MessageManager.getInstance().severe(sender, "You don't have the permission to perform this command!");
-			return true;
-		}
-		return true;
-	}
+                List<String> reason = new ArrayList<String>();
+
+                if (playerFile.isSet("muted.perm.reason")) {
+                    reason = playerFile.getStringList("muted.perm.reason");
+                }
+                reason.add(rs);
+                playerFile.set("muted.perm.reason", reason);
+                try {
+                    playerFile.save(puuidFile);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                MessageManager.getInstance().custom(sender, ChatColor.YELLOW + "" + ChatColor.BOLD + target.getName() + " has been permanently muted! " + ChatColor.RED + "Reason: " + rs);
+
+                if (target.isOnline()) {
+                    Player p = Bukkit.getServer().getPlayer(args[0]);
+                    MessageManager.getInstance().custom(p, ChatColor.YELLOW + "" + ChatColor.BOLD + "You have been permanently muted!" + ChatColor.RED + " Reason: " + rs);
+                    return true;
+                }
+                return true;
+            }
+            MessageManager.getInstance().severe(sender, "You don't have the permission to perform this command!");
+            return true;
+        }
+        return true;
+    }
 }
