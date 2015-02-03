@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/CakeAttackMinigame/CakeAttackMinigame.iml" filepath="$PROJECT_DIR$/CakeAttackMinigame/CakeAttackMinigame.iml" />
       <module fileurl="file://$PROJECT_DIR$/Punisher/Punisher.iml" filepath="$PROJECT_DIR$/Punisher/Punisher.iml" />
       <module fileurl="file://$PROJECT_DIR$/ServerManager/ServerManager.iml" filepath="$PROJECT_DIR$/ServerManager/ServerManager.iml" />
     </modules>
