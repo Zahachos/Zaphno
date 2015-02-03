@@ -1,0 +1,32 @@
+main:
+    name: "Choose a punishment type:"
+    size: 9
+    items:
+        1:
+            name: "&2 Player Info"
+            material: SKULL_ITEM
+            slot: 0
+            lore:
+              -  "&6 %playername%"
+              -  "&6 %uuid%"
+              -  "&c Click to see past infractions"
+              -  "&c from this player!"
+        2:
+            name: "&4 Kick-Warn"
+            material: REDSTONE
+            slot: 3
+            lore:
+              -  "&c Click to kick or warn"
+              -  "&c a player!"
+        3:
+            name: "&4 Mute"
+            material: SULPHUR
+            slot: 5
+            lore:
+              -  "&c Click to mute a player!"
+        4:
+            name: "&4 Ban"
+            material: GLOWSTONE_DUST
+            slot: 7
+            lore:
+              -  "&c Click to ban a player!"
