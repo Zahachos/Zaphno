@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="ServerManager">
+    <output-path>$PROJECT_DIR$/../Plugin Tester/plugins/</output-path>
+    <root id="archive" name="ServerManager.jar">
+      <element id="module-output" name="ServerManager" />
+    </root>
+  </artifact>
+</component>
