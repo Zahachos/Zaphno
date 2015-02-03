@@ -22,6 +22,8 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
+        <module name="CakeAttack" />
+        <module name="MG-CakeAttack" />
         <module name="Punisher" />
         <module name="ServerManager" />
       </profile>

@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="MG-CakeAttack">
+    <output-path>$PROJECT_DIR$/../Plugin Tester/plugins/</output-path>
+    <root id="archive" name="MG-CakeAttack.jar">
+      <element id="module-output" name="MG-CakeAttack" />
+    </root>
+  </artifact>
+</component>

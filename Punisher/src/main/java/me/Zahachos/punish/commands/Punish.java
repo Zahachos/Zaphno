@@ -1,4 +1,4 @@
-package me.Zahachos.punish;
+package me.Zahachos.punish.commands;
 
 import me.Zahachos.punish.managers.ConfigManager;
 import me.Zahachos.punish.managers.MessageManager;

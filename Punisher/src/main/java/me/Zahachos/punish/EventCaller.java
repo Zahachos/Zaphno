@@ -1,5 +1,6 @@
 package me.Zahachos.punish;
 
+import me.Zahachos.punish.commands.Punish;
 import me.Zahachos.punish.events.PlayerInfoClickEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
