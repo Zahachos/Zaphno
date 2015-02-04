@@ -1,6 +1,7 @@
-package me.Zahachos.punish.listeners;
+package me.Zahachos.punish.utils;
 
 import me.Zahachos.punish.Main;
+import me.Zahachos.punish.commands.Punish;
 import me.Zahachos.punish.events.PlayerInfoClickEvent;
 import me.Zahachos.punish.managers.MessageManager;
 import org.bukkit.ChatColor;
@@ -11,16 +12,16 @@ import org.bukkit.event.Listener;
 
 import java.io.File;
 
-public class ClickPlayerInfo implements Listener {
+public class PlayerInfo implements Listener {
 
 	@EventHandler
 	public void PlayerInfoEvent(PlayerInfoClickEvent e) {
 
-		File player = new File(Main.plugin.getDataFolder() + "/players/" + e.getPlayer().getUniqueId() + ".yml");
+		File player = new File(Main.plugin.getDataFolder() + "/players/" + Punish.punishing.get(e.getWhoClicked()).getName() + ".yml");
 		FileConfiguration config = YamlConfiguration.loadConfiguration(player);
 
 		if (!(config.contains("banned") && config.contains("mute") && config.contains("kick"))) {
-			MessageManager.getInstance().info(e.getWhoClicked(), "Player " + e.getPlayer().getName() + ChatColor.YELLOW + " doesn't have any previous infractions!");
+			MessageManager.getInstance().info(e.getWhoClicked(), "Player " + Punish.punishing.get(e.getWhoClicked()).getName() + ChatColor.YELLOW + " doesn't have any previous infractions!");
 		}
 		e.getWhoClicked().closeInventory();
 	}

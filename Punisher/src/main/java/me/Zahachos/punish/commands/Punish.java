@@ -18,6 +18,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -30,7 +31,7 @@ public class Punish implements CommandExecutor {
 
     FileConfiguration config = ConfigManager.getInstance().getConfig();
 
-    public void openGUI(Player player, String inventoryName) {
+    public void openGUI(Player player, int inventoryName) {
 
         try {
             inv = Bukkit.getServer().createInventory(null, (int) config.get("main.size"), (String) config.get("main.name"));
@@ -53,12 +54,12 @@ public class Punish implements CommandExecutor {
         String name;
         Material m;
         try {
-            while (config.get("main.items."+counter) != null) {
-                name = config.getString("main.items." +counter+".name");
+            while (config.get(inventoryName+".items."+counter) != null) {
+                name = config.getString(inventoryName+".items." +counter+".name");
                 name = name.replace("&", "§");
-                m = Material.getMaterial((String) config.get("main.items."+counter+".material"));
+                m = Material.getMaterial((String) config.get(inventoryName+".items."+counter+".material"));
                 ItemStack item = createItem(inventoryName, m, name, counter);
-                int slot = config.getInt("main.items."+counter+".slot");
+                int slot = config.getInt(inventoryName+".items."+counter+".slot");
                 inv.setItem(slot, item);
                 counter++;
             }
@@ -72,11 +73,11 @@ public class Punish implements CommandExecutor {
         playername = null;
     }
 
-    private ItemStack createItem(String inventoryName, Material m, String name, int number) {
+    private ItemStack createItem(int inventoryName, Material m, String name, int number) {
         if (m.equals(Material.SKULL_ITEM)) {
             ItemStack itemstack = getPlayerSkull(playername.getName());
             SkullMeta im = (SkullMeta) itemstack.getItemMeta();
-            im.setDisplayName(getName(inventoryName, number));
+            im.setDisplayName(getItemName(inventoryName, number));
             im.setOwner(playername.getName());
             im.setLore(getLore(inventoryName, number));
             itemstack.setItemMeta(im);
@@ -84,19 +85,19 @@ public class Punish implements CommandExecutor {
         }
         ItemStack i = new ItemStack(m, 1);
         ItemMeta im = i.getItemMeta();
-        im.setDisplayName(getName(inventoryName, number));
+        im.setDisplayName(getItemName(inventoryName, number));
         im.setLore(getLore(inventoryName, number));
         i.setItemMeta(im);
         return i;
     }
     
-    public String getName(String inv, int itemID) {
+    public String getItemName(int inv, int itemID) {
         String name = config.getString(inv+".items."+itemID+".name");
         name = name.replace("&", "§").replace("%playername%", playername.getName()).replace("%uuid%", playername.getUniqueId().toString());
         return name;
     }
     
-    public List<String> getLore(String inv, int itemID) {
+    public List<String> getLore(int inv, int itemID) {
         List<String> lore = config.getStringList(inv+".items."+itemID+".lore");
         int counterLore = 1;
         while (counterLore <= lore.size()) {
@@ -145,6 +146,8 @@ public class Punish implements CommandExecutor {
         }
         return false;
     }
+    
+    public static HashMap<Player, OfflinePlayer> punishing = new HashMap<>();
 
     @SuppressWarnings("deprecation")
     @Override
@@ -167,8 +170,9 @@ public class Punish implements CommandExecutor {
             }
             
             if (hasPaid(args[0], player)) {
+                punishing.put(player, Bukkit.getOfflinePlayer(args[0]));
                 this.playername = Bukkit.getOfflinePlayer(args[0]);
-                openGUI(player, "main");
+                openGUI(player, 1);
             }
         }
         return true;

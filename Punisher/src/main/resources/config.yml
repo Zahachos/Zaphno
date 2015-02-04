@@ -1,4 +1,4 @@
-main:
+1:
     name: "Choose a punishment type:"
     size: 9
     items:
@@ -30,3 +30,32 @@ main:
             slot: 7
             lore:
               -  "&c Click to ban a player!"
+
+2:
+    name: ""
+    size:
+    items:
+        1:
+            name: ""
+            material:
+            slot:
+            lore:
+              -
+        2:
+            name: ""
+            material:
+            slot:
+            lore:
+              -
+        3:
+            name: ""
+            material:
+            slot:
+            lore:
+              -
+        4:
+            name: ""
+            material:
+            slot:
+            lore:
+              -

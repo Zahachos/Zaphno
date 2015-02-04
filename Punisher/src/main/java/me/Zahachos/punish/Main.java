@@ -4,7 +4,7 @@ import me.Zahachos.punish.commands.BanHammer;
 import me.Zahachos.punish.commands.Punish;
 import me.Zahachos.punish.cooldowns.Cooldown;
 import me.Zahachos.punish.cooldowns.utilReloadSave;
-import me.Zahachos.punish.listeners.ClickPlayerInfo;
+import me.Zahachos.punish.utils.PlayerInfo;
 import me.Zahachos.punish.listeners.IfBanned;
 import me.Zahachos.punish.listeners.IfMuted;
 import me.Zahachos.punish.managers.ConfigManager;
@@ -24,7 +24,7 @@ public class Main extends JavaPlugin {
 		Bukkit.getPluginManager().registerEvents(new IfBanned(), this);
 		Bukkit.getPluginManager().registerEvents(new IfMuted(), this);
 		Bukkit.getPluginManager().registerEvents(new EventCaller(), this);
-		Bukkit.getPluginManager().registerEvents(new ClickPlayerInfo(), this);
+		Bukkit.getPluginManager().registerEvents(new PlayerInfo(), this);
 		Bukkit.getLogger().info("[" + this.getDescription().getName() + "] Has been enabled!");
 		plugin = this;
 
