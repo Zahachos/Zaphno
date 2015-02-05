@@ -27,6 +27,7 @@
         4:
             name: "&4 Ban"
             material: GLOWSTONE_DUST
+            ban: true
             slot: 7
             lore:
               -  "&c Click to ban a player!"

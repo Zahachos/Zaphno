@@ -32,6 +32,7 @@ public class EventCaller implements Listener {
 				}
                 
                 if (getBanAction(getItemID(e.getCurrentItem(), e.getInventory().getName()), getInventory(e.getInventory().getName()))) {
+                    Bukkit.broadcastMessage("test");
                     Bukkit.getServer().getPluginManager().callEvent(new PlayerBanClickEvent(p, e.getInventory()));
                 }
                 
@@ -64,7 +65,8 @@ public class EventCaller implements Listener {
     }
     
     public boolean getBanAction(int itemID, int inv) {
-        if (config.contains(inv+".items."+itemID+".ban") && (config.getBoolean(inv+".items."+itemID+".ban") == true)) {
+        if (!config.contains(inv+".items."+itemID+".ban")) {return false;}
+        if (config.getBoolean(inv+".items."+itemID+".ban") == true) {
             return true;
         } else {
             return false;

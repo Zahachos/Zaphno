@@ -19,10 +19,7 @@ public class BanHammer implements CommandExecutor, Listener {
         
         Player p = (Player) sender;
         
-        ItemsStack i = new ItemStack(Material.BLAZE_ROD, 1);
-        7
-        
-        if (p.getInventory().contains()
+        ItemStack i = new ItemStack(Material.BLAZE_ROD, 1);
         
         return true;
     }
