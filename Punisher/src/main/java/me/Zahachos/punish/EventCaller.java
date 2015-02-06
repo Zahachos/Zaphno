@@ -1,9 +1,9 @@
 package me.Zahachos.punish;
 
-import me.Zahachos.punish.commands.Punish;
 import me.Zahachos.punish.events.PlayerBanClickEvent;
 import me.Zahachos.punish.events.PlayerInfoClickEvent;
 import me.Zahachos.punish.managers.ConfigManager;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -20,7 +20,7 @@ public class EventCaller implements Listener {
 
 	@EventHandler
 	public void OnInventoryClick(InventoryClickEvent e) {
-		if(!e.getInventory().equals(Punish.inv)) { return; }
+		if(!isPunishInventory(ChatColor.stripColor(e.getInventory().getName()))) { return; }
 		e.setCancelled(true);
 		if (e.getClick().isLeftClick()) {
 			p = (Player) e.getWhoClicked();
@@ -65,11 +65,19 @@ public class EventCaller implements Listener {
     }
     
     public boolean getBanAction(int itemID, int inv) {
-        if (!config.contains(inv+".items."+itemID+".ban")) {return false;}
-        if (config.getBoolean(inv+".items."+itemID+".ban") == true) {
-            return true;
-        } else {
-            return false;
+        if (!config.contains(inv+".items."+itemID+".ban")) { return false; }
+        return config.getBoolean(inv + ".items." + itemID + ".ban") == true;
+    }
+    
+    public boolean isPunishInventory(String invName) {
+        int counter = 1;
+        while(config.get(counter+".name") != null) {
+            String name = ChatColor.stripColor(Utilities.getInstance().getInventoryName(counter));
+            if (name.equals(invName)) {
+                return true;
+            }
+            counter ++;
         }
+        return false;
     }
 }

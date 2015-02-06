@@ -1,10 +1,11 @@
 package me.Zahachos.punish.commands;
 
+import me.Zahachos.punish.Utilities;
 import me.Zahachos.punish.managers.ConfigManager;
 import me.Zahachos.punish.managers.MessageManager;
-import org.bukkit.*;
-import org.bukkit.block.Block;
-import org.bukkit.block.Skull;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -14,14 +15,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 
-import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Punish implements CommandExecutor {
 
@@ -75,76 +70,20 @@ public class Punish implements CommandExecutor {
 
     private ItemStack createItem(int inventoryName, Material m, String name, int number) {
         if (m.equals(Material.SKULL_ITEM)) {
-            ItemStack itemstack = getPlayerSkull(playername.getName());
+            ItemStack itemstack = Utilities.getInstance().getPlayerSkull(playername.getName());
             SkullMeta im = (SkullMeta) itemstack.getItemMeta();
-            im.setDisplayName(getItemName(inventoryName, number));
+            im.setDisplayName(Utilities.getInstance().getItemName(inventoryName, number));
             im.setOwner(playername.getName());
-            im.setLore(getLore(inventoryName, number));
+            im.setLore(Utilities.getInstance().getLore(inventoryName, number));
             itemstack.setItemMeta(im);
             return itemstack;
         }
         ItemStack i = new ItemStack(m, 1);
         ItemMeta im = i.getItemMeta();
-        im.setDisplayName(getItemName(inventoryName, number));
-        im.setLore(getLore(inventoryName, number));
+        im.setDisplayName(Utilities.getInstance().getItemName(inventoryName, number));
+        im.setLore(Utilities.getInstance().getLore(inventoryName, number));
         i.setItemMeta(im);
         return i;
-    }
-    
-    public String getItemName(int inv, int itemID) {
-        String name = config.getString(inv+".items."+itemID+".name");
-        name = name.replace("&", "§").replace("%playername%", playername.getName()).replace("%uuid%", playername.getUniqueId().toString());
-        return name;
-    }
-    
-    public List<String> getLore(int inv, int itemID) {
-        List<String> lore = config.getStringList(inv+".items."+itemID+".lore");
-        int counterLore = 1;
-        while (counterLore <= lore.size()) {
-            String loreString = lore.get(counterLore-1).replace("&", "§").replace("%playername%", playername.getName()).replace("%uuid%", playername.getUniqueId().toString());
-            lore.remove(counterLore-1);
-            lore.add(counterLore-1, loreString);
-            counterLore++;
-        }
-        return lore;
-    }
-
-    public ItemStack getPlayerSkull(String name) {
-        Location l = Bukkit.getWorlds().get(0).getSpawnLocation();
-        l.setY(0);
-        Block b = l.getBlock();
-        Material m = b.getType();
-        byte data = b.getData();
-        b.setType(Material.SKULL);
-        Skull skull = (Skull) b.getState();
-        skull.setSkullType(SkullType.PLAYER);
-        skull.setOwner(name);
-        skull.update();
-        ItemStack is = b.getDrops().iterator().next();
-        b.setType(m);
-        b.setData(data);
-        return is;
-    }
-    
-    public boolean hasPaid(String player, Player sender) {
-        try {
-            String URL = "http://www.minecraft.net/haspaid.jsp?user=" + player;
-            Document playerExists = Jsoup.connect(URL).get();
-            String inputLine = playerExists.select("body").toString();
-            Pattern pattern = Pattern.compile("\\s([A-Za-z]+)");
-            Matcher matcher = pattern.matcher(inputLine);
-            if (matcher.find()) {
-                if (matcher.group(1).equalsIgnoreCase("true")) {
-                    return true;
-                } else {
-                    MessageManager.getInstance().severe(sender, "Player doesn't exist!");
-                    return false;
-                }
-            }
-        } catch (IOException e) {
-            MessageManager.getInstance().severe(sender, "Connection timed out! Please try again!");
-        }
-        return false;
     }
     
     public static HashMap<Player, OfflinePlayer> punishing = new HashMap<>();
@@ -169,7 +108,7 @@ public class Punish implements CommandExecutor {
                 MessageManager.getInstance().info(player, "No reason specified, using the config default.");
             }
             
-            if (hasPaid(args[0], player)) {
+            if (Utilities.getInstance().hasPaid(args[0], player)) {
                 punishing.put(player, Bukkit.getOfflinePlayer(args[0]));
                 this.playername = Bukkit.getOfflinePlayer(args[0]);
                 openGUI(player, 1);
