@@ -1,0 +1,23 @@
+Sign format:
+
+ChatColor.RED = OFFLINE
+ChatColor.AQUA = GAME_IN_PROGRESS
+ChatColor.GREEN = AWAITING_PLAYERS
+
+examples
+__________________________________
+ChatColor.AQUA +   Lobby 1
+ChatColor.AQUA + IN PROGRESS
+ChatColor.AQUA + 10/10 in lobby
+ChatColor.AQUA + 4/10 alive
+___________________________________
+ChatColor.RED +   Lobby 2
+ChatColor.RED +   OFFLINE
+ChatColor.RED +     N/A
+ChatColor.RED +     N/A
+_________________________________
+ChatColor.GREEN +   Lobby 3
+ChatColor.GREEN +   OPEN!
+ChatColor.GREEN +  2/10 in que
+ChatColor.GREEN +    N/A
+__________________________________
