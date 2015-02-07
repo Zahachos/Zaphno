@@ -3,6 +3,7 @@ package me.Zahachos.punish;
 import me.Zahachos.punish.events.PlayerBanClickEvent;
 import me.Zahachos.punish.events.PlayerInfoClickEvent;
 import me.Zahachos.punish.managers.ConfigManager;
+import me.Zahachos.punish.utils.Utilities;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
