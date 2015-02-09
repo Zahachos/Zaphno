@@ -3,10 +3,8 @@ package me.Zahachos.punish.utils;
 import me.Zahachos.punish.commands.Punish;
 import me.Zahachos.punish.managers.ConfigManager;
 import me.Zahachos.punish.managers.MessageManager;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.SkullType;
+
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Skull;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -40,24 +38,49 @@ public class Utilities {
     
     public int getInventoryID(String invName) {
         int counter = 1;
-        while(config.getString(counter+".name") != null) {
-            String name = getInventoryName(counter);
+        while(config.get(counter + "") != null) {
+            if (getInventoryName(counter).equals(ChatColor.stripColor(invName))) {
+                return counter;
+            } else {
+                counter++;
+            }
         }
         return 0;
     }
 
     public String getItemName(int invID, int itemID) {
-        String name = config.getString(inv+".items."+itemID+".name");
+        String name = config.getString(invID+".items."+itemID+".name");
+        try {
         name = name.replace("&", "§").replace("%playername%", Punish.playername.getName()).replace("%uuid%", Punish.playername.getUniqueId().toString());
+        } catch(NullPointerException npe) {return name;}
         return name;
     }
-
+    
     public int getItemID(int invID, String itemName) {
         int counter = 1;
         while (config.get(invID+".items."+counter) != null) {
-            
+            if (getItemName(invID, counter).equals(ChatColor.stripColor(itemName))) {
+                return counter;
+            } else {
+                counter++;
+            }
         }
-        //TODO: getItemID Method (while loop)
+        return 0;
+    }
+
+    public int getItemID(String itemName) {
+        int counter = 1;
+        while (config.get(counter+"") != null) {
+            int counterItem = 1;
+            while (config.get(counter+".items."+counterItem) != null) {
+                if (getItemName(counter, counterItem).equals(ChatColor.stripColor(itemName))) {
+                    return counter;
+                } else {
+                    counterItem ++;
+                }
+            }
+            counter++;
+        }
         return 0;
     }
     
