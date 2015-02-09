@@ -30,8 +30,8 @@ public class Utilities {
 
     FileConfiguration config = ConfigManager.getInstance().getConfig();
 
-    public String getInventoryName(int number) {
-        String name = config.getString(number+".name");
+    public String getInventoryName(int invID) {
+        String name = config.getString(invID+".name");
         try {
             name = name.replace("&", "§").replace("%playername%", Punish.playername.getName()).replace("%uuid%", Punish.playername.getUniqueId().toString());
         } catch(NullPointerException npe) {return name;}
@@ -46,19 +46,21 @@ public class Utilities {
         return 0;
     }
 
-    public int getItemID(String name, int invID) {
-        int counter = 1;
-        while (config.get)
-        //TODO: getItemID Method (while loop)
-        return 0;
-    }
-
-    public String getItemName(int inv, int itemID) {
+    public String getItemName(int invID, int itemID) {
         String name = config.getString(inv+".items."+itemID+".name");
         name = name.replace("&", "§").replace("%playername%", Punish.playername.getName()).replace("%uuid%", Punish.playername.getUniqueId().toString());
         return name;
     }
 
+    public int getItemID(int invID, String itemName) {
+        int counter = 1;
+        while (config.get(invID+".items."+counter) != null) {
+            
+        }
+        //TODO: getItemID Method (while loop)
+        return 0;
+    }
+    
     public List<String> getLore(int inv, int itemID) {
         List<String> lore = config.getStringList(inv+".items."+itemID+".lore");
         int counterLore = 1;
@@ -108,5 +110,4 @@ public class Utilities {
         }
         return false;
     }
-    
 }
