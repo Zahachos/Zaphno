@@ -28,38 +28,16 @@ public class Utilities {
 
     FileConfiguration config = ConfigManager.getInstance().getConfig();
 
-    public String getInventoryName(int invID) {
+    public String getInventoryName(int invID, Player p) {
         String name = config.getString(invID+".name");
-        try {
-            name = name.replace("&", "§").replace("%playername%", Punish.playername.getName()).replace("%uuid%", Punish.playername.getUniqueId().toString());
-        } catch(NullPointerException npe) {return name;}
-        return null;
-    }
-    
-    public int getInventoryID(String invName) {
-        int counter = 1;
-        while(config.get(counter + "") != null) {
-            if (getInventoryName(counter).equals(ChatColor.stripColor(invName))) {
-                return counter;
-            } else {
-                counter++;
-            }
-        }
-        return 0;
-    }
-
-    public String getItemName(int invID, int itemID) {
-        String name = config.getString(invID+".items."+itemID+".name");
-        try {
-        name = name.replace("&", "§").replace("%playername%", Punish.playername.getName()).replace("%uuid%", Punish.playername.getUniqueId().toString());
-        } catch(NullPointerException npe) {return name;}
+        name = color(name, p);
         return name;
     }
     
-    public int getItemID(int invID, String itemName) {
+    public int getInventoryID(String invName, Player p) {
         int counter = 1;
-        while (config.get(invID+".items."+counter) != null) {
-            if (getItemName(invID, counter).equals(ChatColor.stripColor(itemName))) {
+        while(config.get(counter + "") != null) {
+            if (getInventoryName(counter, p).equals(ChatColor.stripColor(invName))) {
                 return counter;
             } else {
                 counter++;
@@ -68,27 +46,50 @@ public class Utilities {
         return 0;
     }
 
-    public int getItemID(String itemName) {
+    public String getItemName(int invID, int itemID, Player p) {
+        Bukkit.broadcastMessage("tested item name");
+        String name = config.getString(invID+".items."+itemID+".name");
+        name = color(name, p);
+        return name.trim();
+    }
+    
+    public int getItemID(int invID, String itemName, Player p) {
         int counter = 1;
-        while (config.get(counter+"") != null) {
-            int counterItem = 1;
-            while (config.get(counter+".items."+counterItem) != null) {
-                if (getItemName(counter, counterItem).equals(ChatColor.stripColor(itemName))) {
-                    return counter;
-                } else {
-                    counterItem ++;
-                }
+        while (config.get(invID+".items."+counter) != null) {
+            if (getItemName(invID, counter, p).equals(ChatColor.stripColor(itemName))) {
+                return counter;
+            } else {
+                counter++;
             }
-            counter++;
         }
         return 0;
     }
+
+    public int getItemID(String itemName, Player p) {
+        int counter = 1;
+        while (config.get(counter+"") != null) {
+            Bukkit.broadcastMessage(counter+" "+itemName);
+            int counterItem = 1;
+            while (config.get(counter+".items."+counterItem) != null) {
+                Bukkit.broadcastMessage(counter+" "+counterItem+" "+(ChatColor.stripColor(getItemName(counter, counterItem, p))));
+                if ((ChatColor.stripColor(getItemName(counter, counterItem, p))).equals(ChatColor.stripColor(itemName))) {
+                    Bukkit.broadcastMessage("got it");
+                    return counterItem;
+                }
+                counterItem ++;
+            }
+            counter++;
+        }
+        Bukkit.broadcastMessage("0");
+        return 0;
+    }
     
-    public List<String> getLore(int inv, int itemID) {
+    public List<String> getLore(int inv, int itemID, Player p) {
         List<String> lore = config.getStringList(inv+".items."+itemID+".lore");
         int counterLore = 1;
         while (counterLore <= lore.size()) {
-            String loreString = lore.get(counterLore-1).replace("&", "§").replace("%playername%", Punish.playername.getName()).replace("%uuid%", Punish.playername.getUniqueId().toString());
+            String loreString = lore.get(counterLore - 1);
+            loreString = color(loreString, p);
             lore.remove(counterLore-1);
             lore.add(counterLore-1, loreString);
             counterLore++;
@@ -132,5 +133,10 @@ public class Utilities {
             MessageManager.getInstance().severe(sender, "Connection timed out! Please try again!");
         }
         return false;
+    }
+    
+    public String color(String string, Player p) {
+        string = string.replace("&", "§").replace("%playername%", Punish.punishing.get(p).getName()).replace("%uuid%", Punish.punishing.get(p).getUniqueId().toString());
+        return string.trim();
     }
 }

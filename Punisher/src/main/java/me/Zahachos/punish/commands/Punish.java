@@ -1,6 +1,6 @@
 package me.Zahachos.punish.commands;
 
-import me.Zahachos.punish.Utilities;
+import me.Zahachos.punish.utils.Utilities;
 import me.Zahachos.punish.managers.ConfigManager;
 import me.Zahachos.punish.managers.MessageManager;
 import org.bukkit.Bukkit;
@@ -23,8 +23,10 @@ public class Punish implements CommandExecutor {
     public static Inventory inv;
     private ItemStack info, kick, mute, ban;
     public static OfflinePlayer playername;
+    public static Player punisher;
 
     FileConfiguration config = ConfigManager.getInstance().getConfig();
+    Utilities utils = Utilities.getInstance();
 
     public void openGUI(Player player, int inventoryName) {
 
@@ -65,23 +67,24 @@ public class Punish implements CommandExecutor {
         }
 
         player.openInventory(inv);
+        punisher = null;
         playername = null;
     }
 
     private ItemStack createItem(int inventoryName, Material m, String name, int number) {
         if (m.equals(Material.SKULL_ITEM)) {
-            ItemStack itemstack = Utilities.getInstance().getPlayerSkull(playername.getName());
+            ItemStack itemstack = utils.getPlayerSkull(playername.getName());
             SkullMeta im = (SkullMeta) itemstack.getItemMeta();
-            im.setDisplayName(Utilities.getInstance().getItemName(inventoryName, number));
+            im.setDisplayName(utils.getItemName(inventoryName, number, punisher));
             im.setOwner(playername.getName());
-            im.setLore(Utilities.getInstance().getLore(inventoryName, number));
+            im.setLore(utils.getLore(inventoryName, number, punisher));
             itemstack.setItemMeta(im);
             return itemstack;
         }
         ItemStack i = new ItemStack(m, 1);
         ItemMeta im = i.getItemMeta();
-        im.setDisplayName(Utilities.getInstance().getItemName(inventoryName, number));
-        im.setLore(Utilities.getInstance().getLore(inventoryName, number));
+        im.setDisplayName(utils.getItemName(inventoryName, number, punisher));
+        im.setLore(utils.getLore(inventoryName, number, punisher));
         i.setItemMeta(im);
         return i;
     }
@@ -108,9 +111,10 @@ public class Punish implements CommandExecutor {
                 MessageManager.getInstance().info(player, "No reason specified, using the config default.");
             }
             
-            if (Utilities.getInstance().hasPaid(args[0], player)) {
+            if (utils.hasPaid(args[0], player)) {
                 punishing.put(player, Bukkit.getOfflinePlayer(args[0]));
                 this.playername = Bukkit.getOfflinePlayer(args[0]);
+                this.punisher = player;
                 openGUI(player, 1);
             }
         }

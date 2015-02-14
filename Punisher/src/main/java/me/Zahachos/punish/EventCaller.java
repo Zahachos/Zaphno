@@ -4,80 +4,71 @@ import me.Zahachos.punish.events.PlayerBanClickEvent;
 import me.Zahachos.punish.events.PlayerInfoClickEvent;
 import me.Zahachos.punish.managers.ConfigManager;
 import me.Zahachos.punish.utils.Utilities;
-import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.ItemStack;
 
 public class EventCaller implements Listener {
 
-	private Player p;
+    Utilities utils = Utilities.getInstance();
     FileConfiguration config = ConfigManager.getInstance().getConfig();
 
-	@EventHandler
-	public void OnInventoryClick(InventoryClickEvent e) {
-		if(!isPunishInventory(ChatColor.stripColor(e.getInventory().getName()))) { return; }
-		e.setCancelled(true);
-		if (e.getClick().isLeftClick()) {
-			p = (Player) e.getWhoClicked();
-			try {
-                
-				if (e.getCurrentItem().getType().equals(Material.SKULL_ITEM)) {
-					Bukkit.broadcastMessage(e.getSlotType().name());
-					Bukkit.getServer().getPluginManager().callEvent(new PlayerInfoClickEvent(p));
-				}
-                
-                if (getBanAction(getItemID(e.getCurrentItem(), e.getInventory().getName()), getInventory(e.getInventory().getName()))) {
-                    Bukkit.broadcastMessage("test");
+    @EventHandler
+    public void OnInventoryClick(InventoryClickEvent e) {
+        if (!isPunishInventory(e.getInventory().getName(), (Player) e.getWhoClicked())) {
+            return;
+        }
+        e.setCancelled(true);
+
+        Player p = (Player) e.getWhoClicked();
+        int invID = utils.getInventoryID(e.getInventory().getName(), p);
+
+        if (e.getClick().isLeftClick()) {
+            try {
+
+                if (getIfPlayerInfoAction(invID, utils.getItemID(e.getCurrentItem().getItemMeta().getDisplayName(), p))) {
+                    Bukkit.getServer().getPluginManager().callEvent(new PlayerInfoClickEvent(p));
+                }
+
+                if (getIfBanAction(invID, utils.getItemID(e.getCurrentItem().getItemMeta().getDisplayName(), p))) {
                     Bukkit.getServer().getPluginManager().callEvent(new PlayerBanClickEvent(p, e.getInventory()));
                 }
-                
-			} catch(Exception exe) {}
-		}
-	}
-    
-    public int getItemID(ItemStack i, String invName) {
+
+            } catch (Exception exe) {
+                exe.printStackTrace();
+            }
+        }
+    }
+
+    public boolean isPunishInventory(String invName, Player p) {
         int counter = 1;
-        int inv = getInventory(invName);
-        while(config.get(inv+".items."+counter) != null) {
-            if (i.getItemMeta().getDisplayName().equals(config.getString(inv+".items."+counter))) {
-                return counter;
+        while (config.get(counter + ".name") != null) {
+            String name = ChatColor.stripColor(utils.getInventoryName(counter, p));
+            Bukkit.broadcastMessage(invName + " " + name);
+            if (name != null && name.equals(invName)) {
+                return true;
             }
             counter++;
         }
-        return 0;
+        return false;
     }
-    
-    public int getInventory(String inv) {
-        int counter = 1;
-        while (config.get(counter+".name") != null) {
-            String invName = config.getString(counter+".name");
-            if (invName.equals(inv)) {
-                return counter;
-            }
-            counter ++;
-        }
-        return 0;
-    }
-    
-    public boolean getBanAction(int itemID, int inv) {
-        if (!config.contains(inv+".items."+itemID+".ban")) { return false; }
-        return config.getBoolean(inv + ".items." + itemID + ".ban") == true;
-    }
-    
-    public boolean isPunishInventory(String invName) {
-        int counter = 1;
-        while(config.get(counter+".name") != null) {
-            String name = ChatColor.stripColor(Utilities.getInstance().getInventoryName(counter));
-            if (name.equals(invName)) {
+
+    public boolean getIfBanAction(int invID, int itemID) {
+        if (config.isSet(invID + ".items." + itemID + ".playerinfo")) {
+            if (config.getBoolean(invID + ".items." + itemID + ".playerinfo")) {
                 return true;
             }
-            counter ++;
+        }
+        return false;
+    }
+
+    public boolean getIfPlayerInfoAction(int invID, int itemID) {
+        if (config.isSet(invID+".items."+itemID+".ban")) {
+            if (config.getBoolean(invID + ".items." + itemID + ".ban")) { return true; }
         }
         return false;
     }
