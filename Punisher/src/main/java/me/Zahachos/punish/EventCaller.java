@@ -30,6 +30,10 @@ public class EventCaller implements Listener {
         if (e.getClick().isLeftClick()) {
             try {
 
+                if (getIfOpenNewInventory(invID, utils.getItemID(e.getCurrentItem().getItemMeta().getDisplayName(), p))) {
+                    Bukkit.getServer().getPluginManager().callEvent(new PlayerInfoClickEvent(p));
+                }
+                
                 if (getIfPlayerInfoAction(invID, utils.getItemID(e.getCurrentItem().getItemMeta().getDisplayName(), p))) {
                     Bukkit.getServer().getPluginManager().callEvent(new PlayerInfoClickEvent(p));
                 }
@@ -69,6 +73,13 @@ public class EventCaller implements Listener {
     public boolean getIfPlayerInfoAction(int invID, int itemID) {
         if (config.isSet(invID+".items."+itemID+".ban")) {
             if (config.getBoolean(invID + ".items." + itemID + ".ban")) { return true; }
+        }
+        return false;
+    }
+
+    public boolean getIfOpenNewInventory(int invID, int itemID) {
+        if (config.isSet(invID+".items."+itemID+".openInventory")) {
+            if (config.getBoolean(invID + ".items." + itemID + ".openInventory")) { return true; }
         }
         return false;
     }
